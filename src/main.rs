@@ -9,5 +9,5 @@ fn main() {
 
     HttpServer::new(Default::default())
         .serve()
-        .unwrap();
+        .expect("error while serving HTTP");
 }
