@@ -3,6 +3,7 @@ use std::error::Error;
 use std::net::{TcpListener, TcpStream};
 
 use crate::config::Config;
+use crate::http::{response::HttpResponse, status::Status};
 
 pub struct HttpServer {
     config: Config,
@@ -23,8 +24,12 @@ impl HttpServer {
                 println!("{}", body);
             }
 
-            // TODO: reply with something meaningful
-            stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n")?;
+            let res = HttpResponse {
+                status: Status::Ok,
+                content_type: "text/plain",
+                body: String::from("hello world!"),
+            };
+            stream.write_all(res.to_string().as_bytes())?;
             stream.flush()?;
         }
 
