@@ -1,4 +1,4 @@
-use std::io::{self, Read};
+use std::io::{self, Read, Write};
 use std::error::Error;
 use std::net::{TcpListener, TcpStream};
 
@@ -17,7 +17,14 @@ impl HttpServer {
         let listener = self.make_listener()?;
         
         for req in listener.incoming() {
-           self.print_body(&mut req?); 
+            let mut stream = req?; 
+
+            // TODO: bring logging back
+            // self.print_body(&mut stream); 
+           
+            // TODO: reply with something meaningful
+            stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n")?;
+            stream.flush()?;
         }
 
         Ok(())
