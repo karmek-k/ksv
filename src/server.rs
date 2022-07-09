@@ -19,9 +19,10 @@ impl HttpServer {
         for req in listener.incoming() {
             let mut stream = req?; 
 
-            // TODO: bring logging back
-            // self.print_body(&mut stream); 
-           
+            if let Ok(body) = self.get_body(&mut stream) {
+                println!("{}", body);
+            }
+
             // TODO: reply with something meaningful
             stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n")?;
             stream.flush()?;
@@ -34,11 +35,12 @@ impl HttpServer {
         TcpListener::bind((self.config.address, self.config.port))
     }
 
-    fn print_body(&self, req: &mut TcpStream) {
-        let mut body = String::new();
+    fn get_body(&self, stream: &mut TcpStream) -> io::Result<String>{
+        let mut buffer = [0; 2048];
 
-        if req.read_to_string(&mut body).is_ok() {
-            println!("{}", body);
-        };
+        match stream.read(&mut buffer) {
+            Err(e) => Err(e),
+            Ok(_) => Ok(String::from_utf8_lossy(&buffer).to_string())
+        }
     }
 }
