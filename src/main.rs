@@ -1,5 +1,6 @@
 mod config;
 mod server;
+mod http;
 
 use server::HttpServer;
 
