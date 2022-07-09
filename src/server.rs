@@ -5,15 +5,22 @@ use std::net::{TcpListener, TcpStream};
 use crate::config::Config;
 use crate::http::{response::HttpResponse, status::Status};
 
+/// This is the base HTTP server that powers ksv.
 pub struct HttpServer {
     config: Config,
 }
 
 impl HttpServer {
+    /// Creates a new `HttpServer` with given config.
     pub fn new(config: Config) -> Self {
         Self { config }
     }
 
+    /// Creates a `TcpListener`, listens on the host and port from the config
+    /// and handles TCP requests.
+    /// 
+    /// This method returns only if there is an error, otherwise
+    /// it listens infinitely.
     pub fn serve(&self) -> Result<(), Box<dyn Error>> {
         let listener = self.make_listener()?;
         
@@ -36,10 +43,12 @@ impl HttpServer {
         Ok(())
     }
 
+    /// Creates a TCP listener from the config.
     fn make_listener(&self) -> io::Result<TcpListener> {
         TcpListener::bind((self.config.address, self.config.port))
     }
 
+    /// Retrieves a TCP stream's body as a `String`.
     fn get_body(&self, stream: &mut TcpStream) -> io::Result<String>{
         let mut buffer = [0; 2048];
 

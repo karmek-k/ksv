@@ -1,3 +1,6 @@
+/// Status is an enum holding HTTP status identifiers.
+/// 
+/// In order to get a status code and message, use the `tuple` method.
 #[allow(dead_code)]
 pub enum Status {
     // Success
@@ -11,6 +14,7 @@ pub enum Status {
 }
 
 impl Status {
+    /// Returns the status code and message of a `Status` enum instance.
     pub fn tuple(&self) -> (i32, &'static str) {
         // less typing
         type S = Status;

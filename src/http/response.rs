@@ -1,5 +1,9 @@
 use super::status::Status;
 
+/// A HTTP response abstraction.
+/// 
+/// Implements the `ToString` trait, `to_string` returns
+/// a valid HTTP response that can be sent back to the requester.
 pub struct HttpResponse<'a> {
     pub status: Status,
     pub content_type: &'a str,
