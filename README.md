@@ -12,16 +12,16 @@ learn more about web servers :)
 - [x] accepting TCP connections
 - [x] responding to them (with anything)
 - [x] responding to them with configurable HTTP responses
-- [] proper logging
-- [] handling single static files
-- [] redirects
-- [] handling multiple static files (MIME type detection)
-- [] rewrites
+- [ ] proper logging
+- [ ] handling single static files
+- [ ] redirects
+- [ ] handling multiple static files (MIME type detection)
+- [ ] rewrites
 
 ### Extra stuff that would be nice
 
-- [] Caching
-- [] PHP support (via FastCGI)
+- [ ] Caching
+- [ ] PHP support (via FastCGI)
 
 ## Support
 
