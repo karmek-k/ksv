@@ -1,6 +1,7 @@
 use std::net::{IpAddr, Ipv4Addr};
 use std::path::PathBuf;
 
+#[derive(Debug)]
 pub struct Config {
     pub address: IpAddr,
     pub port: u16,
