@@ -1,9 +1,12 @@
-use std::io::{self, Read, Write};
 use std::error::Error;
 use std::net::{TcpListener, TcpStream};
+use std::io::{self, Read};
 
 use crate::config::Config;
-use crate::http::{response::HttpResponse, status::Status};
+use crate::http::responder::Responder;
+use crate::http::response::HttpResponse;
+use crate::http::status::Status;
+
 
 /// This is the base HTTP server that powers ksv.
 pub struct HttpServer {
@@ -25,19 +28,19 @@ impl HttpServer {
         let listener = self.make_listener()?;
         
         for req in listener.incoming() {
-            let mut stream = req?; 
+            let mut stream = req?;
 
             if let Ok(body) = self.get_body(&mut stream) {
                 println!("{}", body);
-            }
+            }    
 
-            let res = HttpResponse {
+            let responder = Responder::new(HttpResponse {
                 status: Status::Ok,
                 content_type: "text/plain",
-                body: String::from("hello world!"),
-            };
-            stream.write_all(res.to_string().as_bytes())?;
-            stream.flush()?;
+                body: String::from("Today will be a good day!"),
+            });
+
+            responder.respond(&mut stream)?;
         }
 
         Ok(())
