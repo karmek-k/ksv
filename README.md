@@ -4,7 +4,7 @@
 
 And it's not [that one from the book](https://doc.rust-lang.org/book/ch20-00-final-project-a-web-server.html).
 
-I'm implementing it from scratch (with no extra crates) in order to
+I'm implementing it from scratch (with as few extra crates as possible) in order to
 learn more about web servers :)
 
 ## TODO
