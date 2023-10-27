@@ -1,13 +1,13 @@
 use std::error::Error;
-use std::io::{self, Read};
-use std::net::{IpAddr, TcpListener, TcpStream};
+use std::io;
+use std::net::{TcpListener, TcpStream};
 
 use crate::config::Config;
 use crate::http::responder::Responder;
 use crate::http::response::HttpResponse;
 use crate::http::status::Status;
 
-use log::{debug, error, info};
+use log::{error, info};
 
 /// This is the base HTTP server that powers ksv.
 pub struct HttpServer {
@@ -33,21 +33,8 @@ impl HttpServer {
         for req in listener.incoming() {
             let mut stream = req?;
 
-            let ip = self.get_remote_ip(&mut stream)?;
-            debug!("received a TCP stream from {}", ip);
-
-            // TODO: use this
-            let _body = self.get_body(&mut stream)?;
-
-            let responder = Responder::new(HttpResponse {
-                status: Status::Ok,
-                content_type: "text/plain",
-                body: String::from("Today will be a good day!"),
-            });
-
-            match responder.respond(&mut stream) {
-                Ok(_) => info!("successfully responded to {}", ip),
-                Err(e) => error!("error while responding to {}: {}", ip, e),
+            if let Err(e) = self.handle_stream(&mut stream) {
+                error!("error: {}", e);
             }
         }
 
@@ -59,19 +46,23 @@ impl HttpServer {
         TcpListener::bind((self.config.address, self.config.port))
     }
 
-    /// Retrieves a TCP stream's body as a `String`.
-    fn get_body(&self, stream: &mut TcpStream) -> io::Result<String> {
-        let mut buffer = [0; 2048];
+    fn handle_stream(&self, stream: &mut TcpStream) -> io::Result<()> {
+        let responder = Responder::new(HttpResponse {
+            status: Status::Ok,
+            content_type: "text/plain",
+            body: String::from("Today will be a good day!"),
+        });
 
-        match stream.read(&mut buffer) {
-            Err(e) => Err(e),
-            Ok(_) => Ok(String::from_utf8_lossy(&buffer).to_string()),
-        }
+        responder.respond(stream)
     }
 
-    fn get_remote_ip(&self, stream: &mut TcpStream) -> io::Result<IpAddr> {
-        let address = stream.peer_addr()?;
+    // Retrieves a TCP stream's body as a `String`.
+    // fn get_body(&self, stream: &mut TcpStream) -> io::Result<String> {
+    //     let mut buffer = [0; 2048];
 
-        Ok(address.ip())
-    }
+    //     match stream.read(&mut buffer) {
+    //         Err(e) => Err(e),
+    //         Ok(_) => Ok(String::from_utf8_lossy(&buffer).to_string()),
+    //     }
+    // }
 }
