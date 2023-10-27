@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::io;
-use std::net::{TcpListener, TcpStream};
+use std::net::TcpListener;
 
 use crate::config::Config;
 use crate::http::responder::Responder;
@@ -29,11 +29,18 @@ impl HttpServer {
         info!("creating a TCP listener");
 
         let listener = self.make_listener()?;
+        let mut responder = Responder::new();
 
         for req in listener.incoming() {
             let mut stream = req?;
 
-            if let Err(e) = self.handle_stream(&mut stream) {
+            responder.response = HttpResponse {
+                status: Status::Ok,
+                content_type: "text/plain",
+                body: String::from("Today will be a good day!"),
+            };
+
+            if let Err(e) = responder.respond(&mut stream) {
                 error!("error: {}", e);
             }
         }
@@ -44,16 +51,6 @@ impl HttpServer {
     /// Creates a TCP listener from the config.
     fn make_listener(&self) -> io::Result<TcpListener> {
         TcpListener::bind((self.config.address, self.config.port))
-    }
-
-    fn handle_stream(&self, stream: &mut TcpStream) -> io::Result<()> {
-        let responder = Responder::new(HttpResponse {
-            status: Status::Ok,
-            content_type: "text/plain",
-            body: String::from("Today will be a good day!"),
-        });
-
-        responder.respond(stream)
     }
 
     // Retrieves a TCP stream's body as a `String`.

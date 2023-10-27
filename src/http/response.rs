@@ -25,3 +25,13 @@ impl<'a> ToString for HttpResponse<'a> {
         )
     }
 }
+
+impl<'a> Default for HttpResponse<'a> {
+    fn default() -> Self {
+        Self {
+            status: Status::Ok,
+            content_type: "text/plain",
+            body: String::new(),
+        }
+    }
+}
