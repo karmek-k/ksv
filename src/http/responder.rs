@@ -1,11 +1,11 @@
 use std::io::Error;
-use std::net::TcpStream;
 use std::io::Write;
+use std::net::TcpStream;
 
 use crate::http::response::HttpResponse;
 
 pub struct Responder<'a> {
-    response: HttpResponse<'a>
+    response: HttpResponse<'a>,
 }
 
 impl<'a> Responder<'a> {
