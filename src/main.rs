@@ -1,11 +1,10 @@
 mod config;
 mod http;
-mod server;
 
 use log::{error, info};
 use simple_logger::SimpleLogger;
 
-use server::HttpServer;
+use http::server::HttpServer;
 
 fn main() {
     SimpleLogger::new()
