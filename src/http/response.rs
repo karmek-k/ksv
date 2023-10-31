@@ -1,7 +1,7 @@
 use super::status::Status;
 
 /// A HTTP response abstraction.
-/// 
+///
 /// Implements the `ToString` trait, `to_string` returns
 /// a valid HTTP response that can be sent back to the requester.
 pub struct HttpResponse<'a> {
@@ -23,5 +23,15 @@ impl<'a> ToString for HttpResponse<'a> {
             self.content_type,
             self.body
         )
+    }
+}
+
+impl<'a> Default for HttpResponse<'a> {
+    fn default() -> Self {
+        Self {
+            status: Status::Ok,
+            content_type: "text/plain",
+            body: String::new(),
+        }
     }
 }

@@ -1,18 +1,20 @@
 use std::io::Error;
-use std::net::TcpStream;
 use std::io::Write;
+use std::net::TcpStream;
 
 use crate::http::response::HttpResponse;
 
 pub struct Responder<'a> {
-    response: HttpResponse<'a>
+    pub response: HttpResponse<'a>,
 }
 
 impl<'a> Responder<'a> {
     /// Creates a new `Responder` that responds with a HTTP response
     /// to a TCP stream.
-    pub fn new(response: HttpResponse<'a>) -> Self {
-        Responder { response }
+    pub fn new() -> Self {
+        Responder {
+            response: Default::default(),
+        }
     }
 
     /// Write a `HttpResponse` to the responder's TCP stream.

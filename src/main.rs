@@ -1,14 +1,15 @@
 mod config;
-mod server;
 mod http;
 
-use log::{info, error};
+use log::{error, info};
 use simple_logger::SimpleLogger;
 
-use server::HttpServer;
+use http::server::HttpServer;
 
 fn main() {
-    SimpleLogger::new().init().expect("logger initialization failed");
+    SimpleLogger::new()
+        .init()
+        .expect("logger initialization failed");
 
     info!("web server is starting");
 

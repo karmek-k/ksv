@@ -1,5 +1,5 @@
 /// Status is an enum holding HTTP status identifiers.
-/// 
+///
 /// In order to get a status code and message, use the `tuple` method.
 #[allow(dead_code)]
 pub enum Status {
