@@ -20,3 +20,9 @@ learn more about web servers.
 
 - [ ] Caching
 - [ ] PHP support (via FastCGI)
+
+## Development branches
+
+- `master`
+- `dev`
+- feature branches (merged to `dev`)
