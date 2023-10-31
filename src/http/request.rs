@@ -1,4 +1,4 @@
-use std::io::Read;
+use std::io::{self, Read};
 
 /// A HTTP request abstraction.
 pub struct HttpRequest {
@@ -8,7 +8,7 @@ pub struct HttpRequest {
 
 impl HttpRequest {
     /// Construct a `HttpRequest` from a stream of bytes.
-    pub fn parse_stream(stream: &mut dyn Read) -> Self {
+    pub fn parse_stream(stream: &mut dyn Read) -> io::Result<Self> {
         let mut buffer = [0; 2048];
         stream.read(&mut buffer).unwrap();
 
@@ -30,11 +30,9 @@ impl HttpRequest {
 
         // check method name (only letters)
 
-        println!("{:?}", strings);
-
-        HttpRequest {
+        Ok(HttpRequest {
             method: strings[0].clone(),
             location: strings[1].clone(),
-        }
+        })
     }
 }
