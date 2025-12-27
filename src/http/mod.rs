@@ -1,3 +1,3 @@
-pub mod response;
+mod response;
 pub mod server;
-pub mod status;
+mod status;

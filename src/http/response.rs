@@ -13,13 +13,12 @@ pub struct HttpResponse<'a> {
 impl<'a> ToString for HttpResponse<'a> {
     /// Returns the HTTP response as a string.
     fn to_string(&self) -> String {
-        let (code, status_msg) = self.status.tuple();
         let extra_length = 4;
 
         format!(
             "HTTP/1.1 {} {}\r\nContent-Length: {}\r\nContent-Type: {}\r\n\r\n{}\r\n\r\n",
-            code,
-            status_msg,
+            self.status.code(),
+            self.status.message(),
             self.body.len() + extra_length,
             self.content_type,
             self.body
@@ -61,9 +60,8 @@ mod tests {
     #[test]
     fn test_default() {
         let res = HttpResponse::default();
-        let (status_code, _status_name) = res.status.tuple();
 
-        assert_eq!(200, status_code);
+        assert_eq!(200, res.status.code());
         assert_eq!(String::new(), res.body);
         assert_eq!("text/plain", res.content_type);
     }
