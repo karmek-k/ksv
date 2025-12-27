@@ -1,6 +1,3 @@
-pub mod responder;
-pub mod response;
+mod response;
 pub mod server;
-pub mod status;
-
-mod response_test;
+mod status;
