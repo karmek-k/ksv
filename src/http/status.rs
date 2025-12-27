@@ -1,3 +1,6 @@
+use std::fmt;
+use std::fmt::Display;
+
 /// Represents a HTTP status identifier.
 #[allow(dead_code)]
 pub enum Status {
@@ -17,5 +20,14 @@ impl Status {
             S::NotFound => (404, "Not Found"),
             S::InternalServerError => (500, "Internal Server Error"),
         }
+    }
+}
+
+impl Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let (status_code, status_text) = self.tuple();
+        write!(f, "{} {}", status_code, status_text)?;
+
+        Ok(())
     }
 }
