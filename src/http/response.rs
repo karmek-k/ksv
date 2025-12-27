@@ -1,16 +1,17 @@
 use super::status::Status;
 
-/// A HTTP response abstraction.
-///
-/// Implements the `ToString` trait, `to_string` returns
-/// a valid HTTP response that can be sent back to the requester.
+/// HTTP response abstraction.
 pub struct HttpResponse<'a> {
+    /// Status code
     pub status: Status,
+    /// Content type of the response
     pub content_type: &'a str,
+    /// Response body
     pub body: String,
 }
 
 impl<'a> ToString for HttpResponse<'a> {
+    /// Returns the HTTP response as a string.
     fn to_string(&self) -> String {
         let (code, status_msg) = self.status.tuple();
         let extra_length = 4;
@@ -27,6 +28,7 @@ impl<'a> ToString for HttpResponse<'a> {
 }
 
 impl<'a> Default for HttpResponse<'a> {
+    /// Returns a response with code 200, of type `text/plain` and with empty body.
     fn default() -> Self {
         Self {
             status: Status::Ok,
