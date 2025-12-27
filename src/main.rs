@@ -4,6 +4,7 @@ mod http;
 use log::{error, info};
 use simple_logger::SimpleLogger;
 
+use config::Config;
 use http::server::HttpServer;
 
 fn main() {
@@ -13,9 +14,11 @@ fn main() {
 
     info!("web server is starting");
 
-    let server = HttpServer::new(Default::default());
+    let server = HttpServer::new(Config::default());
 
-    if let Err(e) = server.serve() {
-        error!("an error occured while serving: {}", e);
+    loop {
+        if let Err(e) = server.serve() {
+            error!("an error occured while serving: {}", e);
+        }
     }
 }
