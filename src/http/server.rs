@@ -1,6 +1,6 @@
 use std::io;
 use std::io::Write;
-use std::net::{TcpListener, TcpStream};
+use std::net::{Shutdown, TcpListener, TcpStream};
 
 use crate::config::Config;
 use crate::http::response::HttpResponse;
@@ -22,13 +22,12 @@ impl HttpServer {
 
     /// Listens on the configured IP address and port and handles TCP requests.
     pub fn serve(&self) -> io::Result<()> {
-        info!("creating a TCP listener");
-
         let listener = self.make_listener()?;
 
+        info!("listening on {}:{}", self.config.address, self.config.port);
         for request in listener.incoming() {
             match self.handle_request(request?) {
-                Ok(response) => debug!("served: {}", response.status),
+                Ok(response) => info!("served: {}", response.status),
                 Err(e) => error!("error: {}", e),
             }
         }
@@ -38,11 +37,14 @@ impl HttpServer {
 
     /// Creates a TCP listener from the config.
     fn make_listener(&self) -> io::Result<TcpListener> {
+        info!("creating a TCP listener");
         TcpListener::bind((self.config.address, self.config.port))
     }
 
     /// Handles an incoming request.
     fn handle_request(&self, mut stream: TcpStream) -> io::Result<HttpResponse<'_>> {
+        debug!("handling request");
+
         // TODO: change this to something more meaningful
         let response = HttpResponse {
             status: Status::Ok,
@@ -52,6 +54,7 @@ impl HttpServer {
 
         stream.write_all(response.to_string().as_bytes())?;
         stream.flush()?;
+        stream.shutdown(Shutdown::Write)?;
 
         Ok(response)
     }
