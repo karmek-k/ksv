@@ -20,8 +20,7 @@ impl HttpServer {
         Self { config }
     }
 
-    /// Creates a `TcpListener`, listens on the configured IP address and port
-    /// and handles TCP requests.
+    /// Listens on the configured IP address and port and handles TCP requests.
     pub fn serve(&self) -> io::Result<()> {
         info!("creating a TCP listener");
 
