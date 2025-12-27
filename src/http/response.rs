@@ -57,4 +57,14 @@ mod tests {
         assert!(res_string.contains("Content-Type: text/plain"));
         assert!(res_string.contains("Hello world"));
     }
+
+    #[test]
+    fn test_default() {
+        let res = HttpResponse::default();
+        let (status_code, _status_name) = res.status.tuple();
+
+        assert_eq!(200, status_code);
+        assert_eq!(String::new(), res.body);
+        assert_eq!("text/plain", res.content_type);
+    }
 }
