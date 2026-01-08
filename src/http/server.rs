@@ -1,8 +1,9 @@
-use std::io;
 use std::io::Write;
+use std::io::{self, Read};
 use std::net::{Shutdown, TcpListener, TcpStream};
 
 use crate::config::Config;
+use crate::http::request::HttpRequest;
 use crate::http::response::HttpResponse;
 use crate::http::status::Status;
 
@@ -45,17 +46,32 @@ impl HttpServer {
     fn handle_request(&self, mut stream: TcpStream) -> io::Result<HttpResponse<'_>> {
         debug!("handling request");
 
-        // TODO: change this to something more meaningful
-        let response = HttpResponse {
-            status: Status::Ok,
-            content_type: "text/plain",
-            body: String::from("Today will be a good day!"),
-        };
+        // TODO: improve this - handle the full request
+        let mut buffer = [0; 1024];
+        stream.read(&mut buffer)?;
+        let request = HttpRequest::from(&buffer);
 
-        stream.write_all(response.to_string().as_bytes())?;
-        stream.flush()?;
-        stream.shutdown(Shutdown::Write)?;
-
-        Ok(response)
+        match request {
+            Ok(request) => {
+                debug!("{} {}", request.method, request.path);
+                let response = write_response(request, stream)?;
+                Ok(response)
+            }
+            Err(e) => Err(io::Error::new(io::ErrorKind::InvalidData, e)),
+        }
     }
+}
+
+fn write_response<'a>(request: HttpRequest, mut stream: TcpStream) -> io::Result<HttpResponse<'a>> {
+    let response = HttpResponse {
+        status: Status::Ok,
+        content_type: "text/plain",
+        body: format!("{} {}", request.method, request.path),
+    };
+
+    stream.write_all(response.to_string().as_bytes())?;
+    stream.flush()?;
+    stream.shutdown(Shutdown::Both)?;
+
+    Ok(response)
 }
